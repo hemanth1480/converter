@@ -5,29 +5,15 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const multer = require("multer");
 const path = require('path');
-const {
-    load
-} = require('nodemon/lib/config');
-const {
-    nextTick
-} = require('process');
-const {
-    dir
-} = require('console');
-const {
-    get
-} = require('express/lib/response');
-const {
-    on
-} = require('events');
-const {
-    spawn
-} = require("child_process");
+const {load} = require('nodemon/lib/config');
+const {nextTick} = require('process');
+const {dir} = require('console');
+const {get} = require('express/lib/response');
+const {on} = require('events');
+const {spawn} = require("child_process");
 var zipFolder = require('zip-folder');
 const PDFMerger = require('pdf-merger-js');
-const {
-    ifError
-} = require('assert');
+const {ifError} = require('assert');
 
 var merger = new PDFMerger();
 

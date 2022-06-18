@@ -7,12 +7,12 @@
             Services</h6>
     </div>
 
-    <form action="/pdfmerger" method="post" enctype="multipart/form-data">
+    <form action="/pdfmerger" method="post" id="imageUploadForm" enctype="multipart/form-data">
 
         <div class="inp-div">
             <input type="text" name="tt" id="tt">
             <!-- <input type="text" name="filename" class="filename" required placeholder="output filename without extension" autocomplete="off"> -->
-            <input type="file" name="pdf" accept="application/pdf" class="inp-img" required multiple>
+            <input type="file" name="pdf" accept="application/pdf" class="inp-img" id="files" required multiple>
             <!-- <input type="file" class="form-control-file" id="exampleFormControlFile1"> -->
             <!-- <input type="text" id="tt"> -->
         </div>
@@ -39,6 +39,28 @@
         margin: 30px auto 20px;
     }
 </style>
+
+<script>
+   $(function() {
+
+var max_file_number = 10,
+    $form = $('#imageUploadForm'), 
+    $file_upload = $('#files', $form), 
+    $button = $('.submit', $form); 
+    $button.prop('disabled', 'disabled');
+
+$file_upload.on('change', function () {
+  var number_of_images = $(this)[0].files.length;
+  if (number_of_images > max_file_number) {
+    alert(`You can upload maximum ${max_file_number} files.`);
+    $(this).val('');
+    $button.prop('disabled', 'disabled');
+  } else {
+    $button.prop('disabled', false);
+  }
+});
+});
+</script>
 
 
 <%- include("partials/footer.ejs") %>
