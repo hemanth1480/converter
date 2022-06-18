@@ -7,6 +7,12 @@
             Services</h6>
     </div>
 
+    <div class="spinner" id="sp" >
+        <h3 id="h3">Processing Files</h3>
+        <div class="loader">
+        </div>
+    </div>
+    
     <form action="/pdfmerger" method="post" id="imageUploadForm" enctype="multipart/form-data">
 
         <div class="inp-div">
@@ -41,25 +47,28 @@
 </style>
 
 <script>
-   $(function() {
-
-var max_file_number = 10,
+function process() {
+    document.getElementById("fd").classList.add("load");
+    document.getElementById("sp").classList.add("vis");
+    document.getElementById("h3").classList.add("vis");
+}
+$(function() {
+    var max_file_number = 10,
     $form = $('#imageUploadForm'), 
     $file_upload = $('#files', $form), 
     $button = $('.submit', $form); 
     $button.prop('disabled', 'disabled');
-
-$file_upload.on('change', function () {
-  var number_of_images = $(this)[0].files.length;
-  if (number_of_images > max_file_number) {
-    alert(`You can upload maximum ${max_file_number} files.`);
-    $(this).val('');
-    $button.prop('disabled', 'disabled');
-  } else {
-    $button.prop('disabled', false);
-  }
-});
-});
+    $file_upload.on('change', function () {
+        var number_of_images = $(this)[0].files.length;
+        if (number_of_images > max_file_number) {
+            alert(`You can upload maximum ${max_file_number} files.`);
+            $(this).val('');
+            $button.prop('disabled', 'disabled');
+        } else {
+            $button.prop('disabled', false);
+        }
+    });
+    });
 </script>
 
 
