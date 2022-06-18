@@ -300,10 +300,11 @@ app.post("/pdfmergeraddfiles", upload.array("pdf"), (req, res) => {
     res.redirect("/pdfselection?id=" + req.body.tt);
 });
 
-app.listen("47", (err) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("At 47");
-    }
-});
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 47;
+}
+
+app.listen(port, () => {
+  console.log("Server started on port 47")
+}); 
