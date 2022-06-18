@@ -1,0 +1,53 @@
+<%- include("partials/header.ejs") %> 
+
+ <!-- <div class="type-con">
+    <h2> <a href="/imgtopdf" class="ele">Img to Pdf</a></h2>
+    <h2> <a href="/doctopdf" class="ele">Doc to Pdf</a></h2>
+    <h2> <a href="/pdfmerger" class="ele">Pdf Merger</a></h2>
+    <h2> <a href="/docmerger" class="ele">Doc Merger</a></h2>
+</div> -->
+
+
+
+<div class="fi-div">
+
+    <h2>Add Images to pdf Documents</h2>
+    <h6>All of my Services are Free to use. There is no file limitation on anything !Absolutely on any of my Services</h6>
+
+    <form action="/imgtopdf" method="post" enctype="multipart/form-data">
+
+        <!-- <div class="inp-div">
+            <input type="text" name="tt" id="tt">
+            <input type="text" name="filename" class="filename" required placeholder="output filename without extension" autocomplete="off">
+            <input type="file" name="image" class="inp-img" required multiple>
+        </div> -->
+
+        <div class="inp-div">
+            <input type="text" name="tt" id="tt">
+            <!-- <input type="text" name="filename" class="filename" required placeholder="output filename without extension" autocomplete="off"> -->
+            <input type="file" name="image" accept="image/jpg, image/jpeg, image/png" class="inp-img" required multiple>
+            <!-- <input type="text" id="tt"> -->
+        </div>
+
+        <button type="submit" class="btn btn-dark">convert file</button>
+    </form> 
+</div>
+
+<style>
+    body{
+        font-size: large;
+    }
+    button{
+        margin: 20px 0;
+    }
+
+    h2{
+        margin: 20px auto;
+    }
+    h6{
+        margin: 30px auto 20px;
+    }
+</style>
+
+
+<%- include("partials/footer.ejs") %> 

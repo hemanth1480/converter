@@ -1,0 +1,54 @@
+<%- include("partials/header.ejs") %> 
+
+<div class="fi-div" id="fd">
+    <div class="ff-div">
+        <h2>Convert docx to pdf</h2>
+        <h6>All of my Services are Free to use. There is no file limitation on anything !Absolutely on any of my Services</h6>
+    </div>
+    <div class="spinner" id="sp" >
+        <h3 id="h3">Processing Files</h3>
+        <div class="loader">
+        </div>
+    </div>
+
+    <form action="/doctopdf" method="post" enctype="multipart/form-data">
+
+        <div class="inp-div">
+            <input type="text" name="tt" id="tt">
+            <!-- <input type="text" name="filename" class="filename" required placeholder="output filename without extension" autocomplete="off"> -->
+            <input type="file" name="docx" accept=".doc" class="inp-img" required multiple>
+            <!-- <input type="text" id="tt"> -->
+        </div>
+
+        <div>
+        <button type="submit" onclick="process()" class="btn btn-dark">convert file</button>
+    </form> 
+</div>
+
+<script>
+
+    function process() {
+        document.getElementById("fd").classList.add("load");
+        document.getElementById("sp").classList.add("vis");
+        document.getElementById("h3").classList.add("vis");
+    }
+</script>
+
+<style>
+    body{
+        font-size: large;
+    }
+    button{
+        margin: 20px 0;
+    }
+
+    h2{
+        margin: 20px auto;
+    }
+    h6{
+        margin: 30px auto 20px;
+    }
+</style>
+
+
+<%- include("partials/footer.ejs") %> 

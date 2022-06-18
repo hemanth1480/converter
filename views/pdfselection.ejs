@@ -1,0 +1,46 @@
+<%- include("partials/header.ejs") %>
+
+<div class="pd">
+    <h3>Arrange the order of pdf files to merge</h3>
+    <h6>Rearrange them by swiping over</h6>
+    <form action="/pdfmergefile" method="post">
+        <input type="text" name="tt" value="<%=id%>" id="tt">
+        <div id="list" class="list-group swap-form">
+            <% fls.forEach(file => { %>
+            <div class="list-group-item"> 
+                <div class="flex-div">
+                    <img src="images/PDF_file_icon.svg.webp" class="pdf-img"> 
+                     <span><%=file.slice(0,19) + ".pdf"%> </span>  
+                    <input type="text" name="dd" id="t" value="<%=file%>">
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <button type="submit" class="btn btn-dark">merge file</button>
+    </form>
+</div>
+
+<style>
+    h3,
+    h6 {
+        text-align: center;
+    }
+
+    .btn {
+        margin: 20px auto !important;
+        display: flex !important;
+    }
+</style>
+<script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+<script>
+    Sortable.create(list, {
+        swap: true,
+        swapClass: "highlight",
+        animation: 150
+    });
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+<%- include("partials/header.ejs") %>
+
+<div class="fi-div" id="fd">
+    <div class="ff-div">
+        <h2>Merge pdf Documents</h2>
+        <h6>All of my Services are Free to use. There is no file limitation on anything !Absolutely on any of my
+            Services</h6>
+    </div>
+
+    <form action="/pdfmerger" method="post" enctype="multipart/form-data">
+
+        <div class="inp-div">
+            <input type="text" name="tt" id="tt">
+            <!-- <input type="text" name="filename" class="filename" required placeholder="output filename without extension" autocomplete="off"> -->
+            <input type="file" name="pdf" accept="application/pdf" class="inp-img" required multiple>
+            <!-- <input type="file" class="form-control-file" id="exampleFormControlFile1"> -->
+            <!-- <input type="text" id="tt"> -->
+        </div>
+
+        <div>
+            <button type="submit" onclick="process()" class="btn btn-dark">merge file</button>
+    </form>
+</div>
+
+<style>
+    body {
+        font-size: large;
+    }
+
+    button {
+        margin: 20px auto;
+    }
+
+    h2 {
+        margin: 20px auto;
+    }
+
+    h6 {
+        margin: 30px auto 20px;
+    }
+</style>
+
+
+<%- include("partials/footer.ejs") %>

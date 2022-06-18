@@ -1,0 +1,10 @@
+/node_modules
+npm-debug.log
+.DS_Store
+/middleware
+/routes
+/doc.js
+/doc2.js
+/doc3.js
+/doc4.js
+/jj.py

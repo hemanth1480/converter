@@ -1,0 +1,15 @@
+<%- include("partials/header.ejs") %> 
+
+<div class="imgpdf">
+    <h1 style="margin: 40px 0;">Merge completed download file</h1>
+
+    <form action="/download" method="post"> 
+        <input type="text" value="output-files/pdf-merger/<%=id%>" name="id" id="tt">
+        <button type="submit" class="btn btn-dark">Download File</button>
+    </form>
+</div>
+
+
+</body>
+</html>
+
