@@ -1,1 +1,1 @@
-pywin32
+docx2pdf==0.1.8
