@@ -2,6 +2,7 @@ from genericpath import exists
 from itertools import count
 import sys
 import os
+import comtypes
 import comtypes.client
 import shutil
 
