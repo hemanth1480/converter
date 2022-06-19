@@ -238,7 +238,7 @@ app.post("/doctopdf", upload.array('docx'), (req, res) => {
             PythonShell.run('/index.py', options, function (err, results) {
                 if (err) throw err;
                 else{
-                    console.log('results: %j', results);
+                    console.log(results);
                     res.redirect("/doctopdfcomplete?id=" + req.body.tt);
                 }
             });
