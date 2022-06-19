@@ -1,1 +1,1 @@
-comtypes
+comtypes==1.1.8
