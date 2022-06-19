@@ -23,6 +23,7 @@
     "pdf-lib": "^1.17.1",
     "pdf-merger-js": "^3.4.0",
     "pdfkit": "^0.13.0",
+    "python-shell": "^3.0.1",
     "unoconv": "^0.1.2",
     "zip-folder": "^1.0.0"
   },

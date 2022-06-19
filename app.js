@@ -10,10 +10,11 @@ const {nextTick} = require('process');
 const {dir} = require('console');
 const {get} = require('express/lib/response');
 const {on} = require('events');
-const {spawn} = require("child_process");
+// const {spawn} = require('child_process');
 var zipFolder = require('zip-folder');
 const PDFMerger = require('pdf-merger-js');
 const {ifError} = require('assert');
+let {PythonShell} = require('python-shell')
 
 var merger = new PDFMerger();
 
@@ -71,18 +72,20 @@ app.get("/imgtopdfcomplete", (req, res) => {
                     id: req.query.id
                 });
             } else {
-                const python = spawn('python3', [__dirname + "/pythonscripts/remove-folder/index.py", req.query.id]);
-                python.stdout.on('data', function (data) {
-                    dataToSend = data.toString();
-                });
-                python.stderr.on('data', data => {
-                    console.error(`stderr: ${data}`);
-                });
-                python.on('exit', (code) => {
-                    console.log(`child process exited with code ${code}`);
-                    res.render("imgtopdfco", {
-                        id: req.query.id
-                    });
+                let options = {
+                    mode: 'text',
+                    pythonOptions: ['-u'], 
+                    scriptPath: 'pythonscripts/remove-folder', 
+                    args: [req.query.id] 
+                };
+                PythonShell.run('/index.py', options, function (err, results) {
+                    if (err) throw err;
+                    else{
+                        console.log('results: %j', results);
+                        res.render("imgtopdfco", {
+                            id: req.query.id
+                        });
+                    }
                 });
             }
         });
@@ -226,16 +229,18 @@ app.post("/doctopdf", upload.array('docx'), (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            const python = spawn('python3', [__dirname + "/pythonscripts/doctopdf/index.py", req.body.tt]);
-            python.stdout.on('data', function (data) {
-                dataToSend = data.toString();
-            });
-            python.stderr.on('data', data => {
-                console.error(`stderr: ${data}`);
-            });
-            python.on('exit', (code) => {
-                console.log(`child process exited with code ${code}`);
-                res.redirect("/doctopdfcomplete?id=" + req.body.tt);
+            let options = {
+                mode: 'text',
+                pythonOptions: ['-u'], 
+                scriptPath: 'pythonscripts/doctopdf', 
+                args: [req.body.tt] 
+            };
+            PythonShell.run('/index.py', options, function (err, results) {
+                if (err) throw err;
+                else{
+                    console.log('results: %j', results);
+                    res.redirect("/doctopdfcomplete?id=" + req.body.tt);
+                }
             });
         }
     });
@@ -265,16 +270,18 @@ app.post("/pdfmergefile", (req, res) => {
                     if (err) {
                         res.redirect("/pdfmerger");
                     } else {
-                        const python = spawn('python3', [__dirname + "/pythonscripts/remove-folder/index.py", req.body.tt]);
-                        python.stdout.on('data', function (data) {
-                            dataToSend = data.toString();
-                        });
-                        python.stderr.on('data', data => {
-                            console.error(`stderr: ${data}`);
-                        });
-                        python.on('exit', (code) => {
-                            console.log(`child process exited with code ${code}`);
-                            res.redirect("/pdfmergeco?id=" + req.body.tt);
+                        let options = {
+                            mode: 'text',
+                            pythonOptions: ['-u'], 
+                            scriptPath: 'pythonscripts/remove-folder', 
+                            args: [req.body.tt] 
+                        };
+                        PythonShell.run('/index.py', options, function (err, results) {
+                            if (err) throw err;
+                            else{
+                                console.log('results: %j', results);
+                                res.redirect("/pdfmergeco?id=" + req.body.tt);
+                            }
                         });
                     }
                 });

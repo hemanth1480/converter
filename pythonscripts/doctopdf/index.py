@@ -10,6 +10,7 @@ wdFormatPDF = 17
 docs = os.listdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/files/" + sys.argv[1])
 
 count =0
+print("uio")
 
 for doc in docs:
     in_file = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  + "/files/" + sys.argv[1] + "/" + doc)
