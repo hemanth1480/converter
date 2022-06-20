@@ -4,19 +4,19 @@ const ejs = require('ejs');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const multer = require("multer");
-const path = require('path');
+// const path = require('path');
 const {load} = require('nodemon/lib/config');
 const {nextTick} = require('process');
 const {dir} = require('console');
 const {get} = require('express/lib/response');
 const {on} = require('events');
 // const {spawn} = require('child_process');
-var zipFolder = require('zip-folder');
-const PDFMerger = require('pdf-merger-js');
+// var zipFolder = require('zip-folder');
+// const PDFMerger = require('pdf-merger-js');
 const {ifError} = require('assert');
 let {PythonShell} = require('python-shell')
 
-var merger = new PDFMerger();
+// var merger = new PDFMerger();
 
 const doc = new PDFDocument({
     compress: false
@@ -54,9 +54,9 @@ app.get("/error", (req, res) => {
     res.render("error");
 });
 
-app.get("/doctopdf", (req, res) => {
-    res.render("doctopdf");
-});
+// app.get("/doctopdf", (req, res) => {
+//     res.render("doctopdf");
+// });
 
 app.get("/pdfmerger", (req, res) => {
     res.render("pdfmerger");
@@ -92,21 +92,21 @@ app.get("/imgtopdfcomplete", (req, res) => {
     }
 });
 
-app.get("/doctopdfcomplete", (req, res) => {
-    if (req.query.id == undefined) {
-        res.redirect("/doctopdf");
-    } else {
-        zipFolder("output-files/doctopdf/" + req.query.id, "output-files/doctopdf/" + req.query.id + "/" + req.query.id + ".zip", function (err) {
-            if (err) {
-                res.redirect("/doctopdf")
-            } else {
-                res.render("doctopdfco", {
-                    id: req.query.id
-                });
-            }
-        });
-    }
-});
+// app.get("/doctopdfcomplete", (req, res) => {
+//     if (req.query.id == undefined) {
+//         res.redirect("/doctopdf");
+//     } else {
+//         zipFolder("output-files/doctopdf/" + req.query.id, "output-files/doctopdf/" + req.query.id + "/" + req.query.id + ".zip", function (err) {
+//             if (err) {
+//                 res.redirect("/doctopdf")
+//             } else {
+//                 res.render("doctopdfco", {
+//                     id: req.query.id
+//                 });
+//             }
+//         });
+//     }
+// });
 
 app.get("/pdfselection", (req, res) => {
     fs.readdir("files/" + req.query.id, (err, files) => {
@@ -165,20 +165,12 @@ app.post("/download", (req, res) => {
                     res.download(__dirname + "/" + req.body.id + "/" + req.body.id.split("/").pop() + ".pdf");
                 }
             });
-        } else if (req.body.id.split("/")[1] == "doctopdf") {
-            fs.readFile(req.body.id + "/" + req.body.id.split("/").pop() + ".zip", (err) => {
-                if (err) {
-                    res.redirect("/doctopdf");
-                } else {
-                    res.download(__dirname + "/" + req.body.id + "/" + req.body.id.split("/").pop() + ".zip");
-                }
-            });
-        } else {
-            fs.readFile(req.body.id + "/" + "merged.pdf", (err) => {
+        }else if (req.body.id.split("/")[1] == "pdf-merger") {
+            fs.readFile(req.body.id + "/" + "merge.pdf", (err) => {
                 if (err) {
                     res.redirect("/pdfmerger");
                 } else {
-                    res.download(__dirname + "/" + req.body.id + "/" + "merged.pdf");
+                    res.download(__dirname + "/" + req.body.id + "/" + "merge.pdf");
                 }
             });
         }
@@ -224,28 +216,27 @@ app.post("/imgtopdf", upload.array('image'), (req, res) => {
     });
 });
 
-app.post("/doctopdf", upload.array('docx'), (req, res) => {
-    fs.mkdir("output-files/doctopdf/" + req.body.tt, (err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            let options = {
-                mode: 'text',
-                pythonOptions: ['-u'], 
-                scriptPath: 'pythonscripts/doctopdf', 
-                args: [req.body.tt] 
-            };
-            PythonShell.run('/index.py', options, function (err, results) {
-                if (err) throw err;
-                else{
-                    console.log(results);
-                    res.redirect("/doctopdfcomplete?id=" + req.body.tt);
-                }
-            });
-        }
-    });
-
-});
+// app.post("/doctopdf", upload.array('docx'), (req, res) => {
+//     fs.mkdir("output-files/doctopdf/" + req.body.tt, (err) => {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             let options = {
+//                 mode: 'text',
+//                 pythonOptions: ['-u'], 
+//                 scriptPath: 'pythonscripts/doctopdf', 
+//                 args: [req.body.tt] 
+//             };
+//             PythonShell.run('/index.py', options, function (err, results) {
+//                 if (err) throw err;
+//                 else{
+//                     console.log(results);
+//                     res.redirect("/doctopdfcomplete?id=" + req.body.tt);
+//                 }
+//             });
+//         }
+//     });
+// });
 
 app.post("/pdfmerger", upload.array('pdf'), (req, res) => {
     fs.mkdir("output-files/pdf-merger/" + req.body.tt, (err) => {
@@ -262,29 +253,19 @@ app.post("/pdfmergefile", (req, res) => {
         if (err) {
             res.redirect("/pdfmerger")
         } else {
-            req.body.dd.forEach(inp => {
-                merger.add('files/' + req.body.tt + "/" + inp);
+            let options = {
+                mode: 'text',
+                pythonOptions: ['-u'],
+                scriptPath: 'pythonscripts/pdfmerger',
+                args: [req.body.dd,req.body.tt]
+            };
+            PythonShell.run('/index.py', options, function (err, results) {
+                if (err) throw err;
+                else {
+                    console.log('results:', results);
+                    res.redirect("/pdfmergeco?id=" + req.body.tt);
+                }
             });
-            merger.save("output-files/pdf-merger/" + req.body.tt + "/merged.pdf")
-                .then((err) => {
-                    if (err) {
-                        res.redirect("/pdfmerger");
-                    } else {
-                        let options = {
-                            mode: 'text',
-                            pythonOptions: ['-u'], 
-                            scriptPath: 'pythonscripts/remove-folder', 
-                            args: [req.body.tt] 
-                        };
-                        PythonShell.run('/index.py', options, function (err, results) {
-                            if (err) throw err;
-                            else{
-                                console.log('results: %j', results);
-                                res.redirect("/pdfmergeco?id=" + req.body.tt);
-                            }
-                        });
-                    }
-                });
         }
     });
 });

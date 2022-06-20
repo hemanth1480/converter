@@ -52,23 +52,23 @@ function process() {
     document.getElementById("sp").classList.add("vis");
     document.getElementById("h3").classList.add("vis");
 }
-$(function() {
-    var max_file_number = 10,
-    $form = $('#imageUploadForm'), 
-    $file_upload = $('#files', $form), 
-    $button = $('.submit', $form); 
-    $button.prop('disabled', 'disabled');
-    $file_upload.on('change', function () {
-        var number_of_images = $(this)[0].files.length;
-        if (number_of_images > max_file_number) {
-            alert(`You can upload maximum ${max_file_number} files.`);
-            $(this).val('');
-            $button.prop('disabled', 'disabled');
-        } else {
-            $button.prop('disabled', false);
-        }
-    });
-    });
+// $(function() {
+//     var max_file_number = 10,
+//     $form = $('#imageUploadForm'), 
+//     $file_upload = $('#files', $form), 
+//     $button = $('.submit', $form); 
+//     $button.prop('disabled', 'disabled');
+//     $file_upload.on('change', function () {
+//         var number_of_images = $(this)[0].files.length;
+//         if (number_of_images > max_file_number) {
+//             alert(`You can upload maximum ${max_file_number} files.`);
+//             $(this).val('');
+//             $button.prop('disabled', 'disabled');
+//         } else {
+//             $button.prop('disabled', false);
+//         }
+//     });
+//     });
 </script>
 
 
