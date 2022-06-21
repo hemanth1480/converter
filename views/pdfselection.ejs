@@ -1,8 +1,14 @@
 <%- include("partials/header.ejs") %>
 
-<div class="pd">
+<div class="spinner" id="sp" >
+    <h3 id="h3">Processing Files</h3>
+    <div class="loader">
+    </div>
+</div>
+
+<div class="pd" id="io">
     <h3>Arrange the order of pdf files to merge</h3>
-    <h6>Rearrange them by swiping over</h6>
+    <h6>Arrange files by swiping over</h6>
     <form action="/pdfmergefile" method="post">
         <input type="text" name="tt" value="<%=id%>" id="tt">
         <div id="list" class="list-group swap-form">
@@ -16,7 +22,7 @@
             </div>
             <% }) %>
         </div>
-        <button type="submit" class="btn btn-dark">merge file</button>
+        <button type="submit" onclick="process()" class="btn btn-dark">merge file</button>
     </form>
 </div>
 
@@ -30,6 +36,13 @@
         margin: 20px auto !important;
         display: flex !important;
     }
+
+    .spinner {
+        margin: 150px auto 0;
+    }
+    .no-y{
+        overflow-y: hidden !important;
+    }
 </style>
 <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
 <script>
@@ -38,7 +51,21 @@
         swapClass: "highlight",
         animation: 150
     });
+    
+    function process() {
+        window.scroll({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
+    document.getElementById("io").classList.add("load");
+    document.getElementById("sp").classList.add("vis");
+    document.getElementById("h3").classList.add("vis");
+    document.body.classList.add("no-y")
+}
+
 </script>
+
 
 
 </body>
