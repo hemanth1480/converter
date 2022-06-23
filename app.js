@@ -52,6 +52,10 @@ app.get("/doctopdf", (req, res) => {
     res.render("doctopdf");
 });
 
+app.get("/ppttopdf", (req, res) => {
+    res.render("ppttopdf");
+});
+
 app.get("/pdfmerger", (req, res) => {
     res.render("pdfmerger");
 });
@@ -110,6 +114,41 @@ app.get("/doctopdfcomplete", (req, res) => {
                                 res.redirect("/doctopdf")
                             } else {
                                 res.render("doctopdfco", {
+                                    id: req.query.id
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
+
+app.get("/ppttopdfcomplete", (req, res) => {
+    if (req.query.id == undefined) {
+        res.redirect("/ppttopdf");
+    } else {
+        let options = {
+            mode: 'text',
+            pythonOptions: ['-u'],
+            scriptPath: 'pythonscripts/remove-folder',
+            args: [req.query.id]
+        };
+        PythonShell.run('/index.py', options, function (err, results) {
+            if (err) {
+                res.redirect("/ppttopdf")
+            } else {
+                console.log('results: %j', results);
+                fs.readdir("output-files/doctopdf/" + req.query.id, (err) => {
+                    if (err) {
+                        res.redirect("/ppttopdf")
+                    } else {
+                        zipFolder("output-files/ppttopdf/" + req.query.id, "output-files/ppttopdf/" + req.query.id + "/" + req.query.id + ".zip", (error) => {
+                            if (error) {
+                                res.redirect("/ppttopdf")
+                            } else {
+                                res.render("ppttopdfco", {
                                     id: req.query.id
                                 });
                             }
@@ -241,11 +280,11 @@ app.post("/imgtopdf", upload.array('image'), (req, res) => {
 app.post("/doctopdf", upload.array('docx'), (req, res) => {
     fs.mkdir("output-files/doctopdf/" + req.body.tt, (err) => {
         if (err) {
-            console.log(err);
+            res.redirect("/doctopdf");
         } else {
             fs.readdir("files/" + req.body.tt, (err, fls) => {
                 if (err) {
-                    console.log(err);
+                    res.redirect("/doctopdf");
                 } else {
                     let count = 0
                     fls.forEach(one => {
@@ -260,10 +299,47 @@ app.post("/doctopdf", upload.array('docx'), (req, res) => {
                         };
 
                         PDFNet.runWithCleanup(main, 'demo:1655819399669:7a7ea63a0300000000f8674b8875d719b92b2a1b6dddb6eb4d27bcfd85').catch(function (error) {
-                            console.log('Error: ' + JSON.stringify(error));
+                            res.redirect("/doctopdf");
                         }).then(function () {
                             if (count == fls.length - 1) {
                                 res.redirect("/doctopdfcomplete?id=" + req.body.tt)
+                            } else {
+                                count++
+                            }
+                        });
+                    });
+                }
+            })
+        }
+    });
+});
+
+app.post("/ppttopdf", upload.array('pptx'), (req, res) => {
+    fs.mkdir("output-files/ppttopdf/" + req.body.tt, (err) => {
+        if (err) {
+            res.redirect("/ppttopdf");
+        } else {
+            fs.readdir("files/" + req.body.tt, (err, fls) => {
+                if (err) {
+                    res.redirect("/ppttopdf");
+                } else {
+                    let count = 0
+                    fls.forEach(one => {
+                        const main = async () => {
+                            const pdfdoc = await PDFNet.PDFDoc.create();
+                            await pdfdoc.initSecurityHandler();
+                            await PDFNet.Convert.toPdf(pdfdoc, "files/" + req.body.tt + "/" + one);
+                            pdfdoc.save(
+                                "output-files/ppttopdf/" + req.body.tt + "/" + one.split(".")[0] + ".pdf",
+                                PDFNet.SDFDoc.SaveOptions.e_linearized,
+                            );
+                        };
+
+                        PDFNet.runWithCleanup(main, 'demo:1655819399669:7a7ea63a0300000000f8674b8875d719b92b2a1b6dddb6eb4d27bcfd85').catch(function (error) {
+                            res.redirect("/ppttopdf");
+                        }).then(function () {
+                            if (count == fls.length - 1) {
+                                res.redirect("/ppttopdfcomplete?id=" + req.body.tt)
                             } else {
                                 count++
                             }
@@ -313,7 +389,7 @@ app.post("/pdfmergeraddfiles", upload.array("pdf"), (req, res) => {
 
 let port = process.env.PORT;
 if (port == null || port == "") {
-    port = 47;
+    port = 8080;
 }
 
 app.listen(port, () => {
