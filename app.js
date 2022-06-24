@@ -137,16 +137,17 @@ app.get("/ppttopdfcomplete", (req, res) => {
         };
         PythonShell.run('/index.py', options, function (err, results) {
             if (err) {
-                res.redirect("/ppttopdf")
+                res.redirect("/ppttopdf");
             } else {
                 console.log('results: %j', results);
-                fs.readdir("output-files/doctopdf/" + req.query.id, (err) => {
+                fs.readdir("output-files/ppttopdf/" + req.query.id, (err) => {
                     if (err) {
-                        res.redirect("/ppttopdf")
+                        res.redirect("/ppttopdf");
+                        console.log(err);
                     } else {
                         zipFolder("output-files/ppttopdf/" + req.query.id, "output-files/ppttopdf/" + req.query.id + "/" + req.query.id + ".zip", (error) => {
                             if (error) {
-                                res.redirect("/ppttopdf")
+                                res.redirect("/ppttopdf");
                             } else {
                                 res.render("ppttopdfco", {
                                     id: req.query.id
@@ -229,7 +230,7 @@ app.post("/download", (req, res) => {
             var fid = req.body.id.split("/").pop();
             fs.readFile(req.body.id + "/" + fid + ".zip", (err) => {
                 if (err) {
-                    res.redirect("/doctopdf");
+                    res.redirect("/" + req.body.id.split("/")[1]);
                 } else {
                     res.download(__dirname + "/" + req.body.id + "/" + fid + ".zip");
                 }
@@ -298,8 +299,8 @@ app.post("/doctopdf", upload.array('docx'), (req, res) => {
                             );
                         };
 
-                        PDFNet.runWithCleanup(main, 'demo:1655819399669:7a7ea63a0300000000f8674b8875d719b92b2a1b6dddb6eb4d27bcfd85').catch(function (error) {
-                            res.redirect("/doctopdf");
+                        PDFNet.runWithCleanup(main, 'demo:1655819399669:7a7ea63a0300000000f8674b8875d719b92b2a1b6dddb6eb4d27bcfd85').catch(function (err) {
+                            if(err) {res.redirect("/doctopdf");}
                         }).then(function () {
                             if (count == fls.length - 1) {
                                 res.redirect("/doctopdfcomplete?id=" + req.body.tt)
@@ -334,9 +335,8 @@ app.post("/ppttopdf", upload.array('pptx'), (req, res) => {
                                 PDFNet.SDFDoc.SaveOptions.e_linearized,
                             );
                         };
-
-                        PDFNet.runWithCleanup(main, 'demo:1655819399669:7a7ea63a0300000000f8674b8875d719b92b2a1b6dddb6eb4d27bcfd85').catch(function (error) {
-                            res.redirect("/ppttopdf");
+                        PDFNet.runWithCleanup(main, 'demo:1655819399669:7a7ea63a0300000000f8674b8875d719b92b2a1b6dddb6eb4d27bcfd85').catch(function (err) {
+                            if(err) {res.redirect("/ppttopdf");}
                         }).then(function () {
                             if (count == fls.length - 1) {
                                 res.redirect("/ppttopdfcomplete?id=" + req.body.tt)

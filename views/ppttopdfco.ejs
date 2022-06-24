@@ -6,15 +6,15 @@
     <h1 style="margin: 40px 0;">Convertion completed download file</h1>
 
     <form action="/download" method="post"> 
-        <input type="text" name="id" value="output-files/ppttopdf/<%= id %>/inst2" id="tt">
+        <input type="text" name="id" value="output-files/ppttopdf/<%= id %>" id="tt">
         <button type="submit" class="btn btn-dark">Download File</button>
     </form>
 </div>
-
+<!-- 
 <script>
     var jj = "output-files/doctopdf/" + "<%= id %>" ;
     document.getElementById("tt").setAttribute("value",jj);
-</script>
+</script> -->
 
 </body>
 </html>
