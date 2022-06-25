@@ -92,7 +92,7 @@ app.get("/imgtopdfcomplete", (req, res) => {
                                 args: ["imgtopdf/" + req.query.id]
                             };
                             PythonShell.run('/index.py', options, function (err, results) {
-                                if (err) throw err;
+                                if (err) {res.redirect("/imgtopdf")}
                                 else {
                                     console.log('results:', results);
                                 }
@@ -140,7 +140,7 @@ app.get("/doctopdfcomplete", (req, res) => {
                                         args: ["doctopdf/" + req.query.id]
                                     };
                                     PythonShell.run('/index.py', options, function (err, results) {
-                                        if (err) throw err;
+                                        if (err) {res.redirect("/doctopdf")}
                                         else {
                                             console.log('results:', results);
                                         }
@@ -191,7 +191,7 @@ app.get("/ppttopdfcomplete", (req, res) => {
                                         args: ["ppttopdf/" + req.query.id]
                                     };
                                     PythonShell.run('/index.py', options, function (err, results) {
-                                        if (err) throw err;
+                                        if (err) {res.redirect("/ppttopdf")}
                                         else {
                                             console.log('results:', results);
                                         }
@@ -204,23 +204,6 @@ app.get("/ppttopdfcomplete", (req, res) => {
             }
         });
     }
-});
-
-app.get("/pdfselection", (req, res) => {
-    fs.readdir("files/" + req.query.id, (err, files) => {
-        if (err) {
-            res.redirect("/pdfmerger");
-        } else {
-            if (files.length < 2) {
-                res.redirect("/pdfmergeraddfiles?id=" + req.query.id);
-            } else {
-                res.render("pdfselection", {
-                    fls: files,
-                    id: req.query.id
-                });
-            }
-        }
-    });
 });
 
 app.get("/pdfmergeco", (req, res) => {
@@ -243,7 +226,7 @@ app.get("/pdfmergeco", (req, res) => {
                         args: ["ppttopdf/" + req.query.id]
                     };
                     PythonShell.run('/index.py', options, function (err, results) {
-                        if (err) throw err;
+                        if (err) {res.redirect("/pdfmerger")}
                         else {
                             console.log('results:', results);
                         }
@@ -252,6 +235,23 @@ app.get("/pdfmergeco", (req, res) => {
             }
         });
     }
+});
+
+app.get("/pdfselection", (req, res) => {
+    fs.readdir("files/" + req.query.id, (err, files) => {
+        if (err) {
+            res.redirect("/pdfmerger");
+        } else {
+            if (files.length < 2) {
+                res.redirect("/pdfmergeraddfiles?id=" + req.query.id);
+            } else {
+                res.render("pdfselection", {
+                    fls: files,
+                    id: req.query.id
+                });
+            }
+        }
+    });
 });
 
 app.get("/pdfmergeraddfiles", (req, res) => {
