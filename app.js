@@ -83,6 +83,21 @@ app.get("/imgtopdfcomplete", (req, res) => {
                         res.render("imgtopdfco", {
                             id: req.query.id
                         });
+                        setTimeout(myFunction, 1000 * 600) 
+                        function myFunction() {
+                            let options = {
+                                mode: 'text',
+                                pythonOptions: ['-u'],
+                                scriptPath: 'pythonscripts/output-remover',
+                                args: ["imgtopdf/" + req.query.id]
+                            };
+                            PythonShell.run('/index.py', options, function (err, results) {
+                                if (err) throw err;
+                                else {
+                                    console.log('results:', results);
+                                }
+                            });
+                        }
                     }
                 });
             }
@@ -116,6 +131,21 @@ app.get("/doctopdfcomplete", (req, res) => {
                                 res.render("doctopdfco", {
                                     id: req.query.id
                                 });
+                                setTimeout(myFunction, 1000 * 600) 
+                                function myFunction() {
+                                    let options = {
+                                        mode: 'text',
+                                        pythonOptions: ['-u'],
+                                        scriptPath: 'pythonscripts/output-remover',
+                                        args: ["doctopdf/" + req.query.id]
+                                    };
+                                    PythonShell.run('/index.py', options, function (err, results) {
+                                        if (err) throw err;
+                                        else {
+                                            console.log('results:', results);
+                                        }
+                                    });
+                                }
                             }
                         });
                     }
@@ -152,6 +182,21 @@ app.get("/ppttopdfcomplete", (req, res) => {
                                 res.render("ppttopdfco", {
                                     id: req.query.id
                                 });
+                                setTimeout(myFunction, 1000 * 600) 
+                                function myFunction() {
+                                    let options = {
+                                        mode: 'text',
+                                        pythonOptions: ['-u'],
+                                        scriptPath: 'pythonscripts/output-remover',
+                                        args: ["ppttopdf/" + req.query.id]
+                                    };
+                                    PythonShell.run('/index.py', options, function (err, results) {
+                                        if (err) throw err;
+                                        else {
+                                            console.log('results:', results);
+                                        }
+                                    });
+                                }
                             }
                         });
                     }
@@ -189,6 +234,21 @@ app.get("/pdfmergeco", (req, res) => {
                 res.render("pdfmergeco", {
                     id: req.query.id
                 });
+                setTimeout(myFunction, 1000 * 600) 
+                function myFunction() {
+                    let options = {
+                        mode: 'text',
+                        pythonOptions: ['-u'],
+                        scriptPath: 'pythonscripts/output-remover',
+                        args: ["ppttopdf/" + req.query.id]
+                    };
+                    PythonShell.run('/index.py', options, function (err, results) {
+                        if (err) throw err;
+                        else {
+                            console.log('results:', results);
+                        }
+                    });
+                }
             }
         });
     }
