@@ -16,7 +16,8 @@
             <div class="list-group-item"> 
                 <div class="flex-div">
                     <img src="images/PDF_file_icon.svg.webp" class="pdf-img"> 
-                     <span><%=file.slice(0,19) + ".pdf"%> </span>  
+                    <% var name = file.split(".")[0]%>
+                    <span><%=name.slice(0,19) + ".pdf"%> </span>  
                     <input type="text" name="dd" id="t" value="<%=file%>">
                 </div>
             </div>
