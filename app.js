@@ -11,9 +11,13 @@ const {
     PDFNet
 } = require('@pdftron/pdfnet-node');
 var zipFolder = require('zip-folder');
-// var https = require('https');
+var https = require('https');
 const path = require("path")
-const doc = new PDFDocument({compress: false});
+
+const doc = new PDFDocument({
+    compress: false
+});
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -451,26 +455,27 @@ if (port == null || port == "") {
     port = 8080;
 }
 
-let port2 = 8081;
-
-// app.listen(port, () => {
-//     console.log("Server started on port " + port)
-// });
-
-let options = {
-    key: fs.readFileSync(path.join(__dirname,"key.pem")),
-    cert: fs.readFileSync(path.join(__dirname,"cert.pem")),
-};
-
-let https = require('https').Server(options, app);
- https.listen(port, function () {
- console.log('API server listening on port ' + port + ' (SSL Connection)');
- });
-
- let http = require('http').Server(app);
-http.listen(port2, function() {
- console.log('API server listening on port ' + port2);
+app.listen(port, () => {
+    console.log("Server started on port " + port)
 });
+
+// const sslServer = https.createServer(
+//     {
+//         key: fs.readFileSync(path.join(__dirname,"key.pem")),
+//         cert: fs.readFileSync(path.join(__dirname,"cert.pem")),
+//     },
+//     app
+// )
+
+// let https = require('https').Server(options, app);
+//  https.listen(appPortHttps, function () {
+//  console.log('API server listening on port ' + appPortHttps + ' (SSL Connection)');
+//  });
+
+//  let http = require('http').Server(app);
+// http.listen(appPort, function() {
+//  console.log('API server listening on port ' + appPort);
+// });
 
 // sslServer.listen(port, () => {
 //     console.log("Server started on port " + port);
