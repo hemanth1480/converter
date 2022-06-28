@@ -458,38 +458,3 @@ if (port == null || port == "") {
 app.listen(port, () => {
     console.log("Server started on port " + port)
 });
-
-// const sslServer = https.createServer(
-//     {
-//         key: fs.readFileSync(path.join(__dirname,"key.pem")),
-//         cert: fs.readFileSync(path.join(__dirname,"cert.pem")),
-//     },
-//     app
-// )
-
-// let https = require('https').Server(options, app);
-//  https.listen(appPortHttps, function () {
-//  console.log('API server listening on port ' + appPortHttps + ' (SSL Connection)');
-//  });
-
-//  let http = require('http').Server(app);
-// http.listen(appPort, function() {
-//  console.log('API server listening on port ' + appPort);
-// });
-
-// sslServer.listen(port, () => {
-//     console.log("Server started on port " + port);
-// })
-
-// var https_options = {
-//     key: fs.readFileSync("/path/to/private.key"),
-//     cert: fs.readFileSync("/path/to/your_domain_name.crt"),
-//     ca: [
-//         fs.readFileSync('path/to/CA_root.crt'),
-//         fs.readFileSync('path/to/ca_bundle_certificate.crt')
-//     ]
-// };
-
-// https.createServer( (req, res) => {
-//     console.log("Server started on port " + port);
-// }).listen(port)
