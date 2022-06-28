@@ -11,10 +11,9 @@ const {
     PDFNet
 } = require('@pdftron/pdfnet-node');
 var zipFolder = require('zip-folder');
-
-const doc = new PDFDocument({
-    compress: false
-});
+// var https = require('https');
+const path = require("path")
+const doc = new PDFDocument({compress: false});
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -452,6 +451,40 @@ if (port == null || port == "") {
     port = 8080;
 }
 
-app.listen(port, () => {
-    console.log("Server started on port " + port)
+let port2 = 8081;
+
+// app.listen(port, () => {
+//     console.log("Server started on port " + port)
+// });
+
+let options = {
+    key: fs.readFileSync(path.join(__dirname,"key.pem")),
+    cert: fs.readFileSync(path.join(__dirname,"cert.pem")),
+};
+
+let https = require('https').Server(options, app);
+ https.listen(port, function () {
+ console.log('API server listening on port ' + port + ' (SSL Connection)');
+ });
+
+ let http = require('http').Server(app);
+http.listen(port2, function() {
+ console.log('API server listening on port ' + port2);
 });
+
+// sslServer.listen(port, () => {
+//     console.log("Server started on port " + port);
+// })
+
+// var https_options = {
+//     key: fs.readFileSync("/path/to/private.key"),
+//     cert: fs.readFileSync("/path/to/your_domain_name.crt"),
+//     ca: [
+//         fs.readFileSync('path/to/CA_root.crt'),
+//         fs.readFileSync('path/to/ca_bundle_certificate.crt')
+//     ]
+// };
+
+// https.createServer( (req, res) => {
+//     console.log("Server started on port " + port);
+// }).listen(port)
