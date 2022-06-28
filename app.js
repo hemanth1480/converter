@@ -10,7 +10,6 @@ let {
 const {
     PDFNet
 } = require('@pdftron/pdfnet-node');
-var zipFolder = require('zip-folder');
 var https = require('https');
 const path = require("path");
 var archiver = require('archiver');
@@ -130,32 +129,47 @@ app.get("/doctopdfcomplete", (req, res) => {
                     if (err) {
                         res.redirect("/doctopdf")
                     } else {
-                        zipFolder("output-files/doctopdf/" + req.query.id, "output-files/doctopdf/" + req.query.id + "/" + req.query.id + ".zip", (error) => {
-                            if (error) {
-                                res.redirect("/doctopdf")
-                            } else {
-                                res.render("doctopdfco", {
-                                    id: req.query.id
-                                });
-                                setTimeout(myFunction, 1000 * 600)
+                        var output = fs.createWriteStream("output-files/doctopdf/doctopdf-zip/" + req.query.id + ".zip");
+                        var archive = archiver('zip');
 
-                                function myFunction() {
-                                    let options = {
-                                        mode: 'text',
-                                        pythonOptions: ['-u'],
-                                        scriptPath: 'pythonscripts/output-remover',
-                                        args: ["doctopdf/" + req.query.id]
-                                    };
-                                    PythonShell.run('/index.py', options, function (err, results) {
-                                        if (err) {
-                                            res.redirect("/doctopdf")
-                                        } else {
-                                            console.log('results:', results);
-                                        }
-                                    });
-                                }
+                        output.on('close', function () {
+                            // console.log(archive.pointer() + ' total bytes');
+                            // console.log('archiver has been finalized and the output file descriptor has closed.');
+                            res.render("doctopdfco", {
+                                id: req.query.id
+                            });
+                            setTimeout(myFunction, 1000 * 600)
+
+                            function myFunction() {
+                                let options = {
+                                    mode: 'text',
+                                    pythonOptions: ['-u'],
+                                    scriptPath: 'pythonscripts/output-remover',
+                                    args: ["ppttopdf/" + req.query.id]
+                                };
+                                PythonShell.run('/index.py', options, function (err, results) {
+                                    if (err) {
+                                        // res.redirect("/doctopdf");
+                                    } else {
+                                        console.log('results:', results);
+                                    }
+                                });
                             }
                         });
+
+                        archive.on('error', function (err) {
+                            throw err;
+                        });
+
+                        archive.pipe(output);
+
+                        // append files from a sub-directory, putting its contents at the root of archive
+                        archive.directory("output-files/doctopdf/" + req.query.id, false);
+
+                        // append files from a sub-directory and naming it `new-subdir` within the archive
+                        archive.directory('subdir/', 'new-subdir');
+
+                        archive.finalize();
                     }
                 });
             }
@@ -182,7 +196,7 @@ app.get("/ppttopdfcomplete", (req, res) => {
                     if (err) {
                         res.redirect("/ppttopdf");
                     } else {
-                        var output = fs.createWriteStream("output-files/ppttopdf/" + req.query.id + "/" + req.query.id + ".zip");
+                        var output = fs.createWriteStream("output-files/ppttopdf/ppttopdf-zip/" + req.query.id + ".zip");
                         var archive = archiver('zip');
 
                         output.on('close', function () {
@@ -202,7 +216,7 @@ app.get("/ppttopdfcomplete", (req, res) => {
                                 };
                                 PythonShell.run('/index.py', options, function (err, results) {
                                     if (err) {
-                                        res.redirect("/doctopdf")
+                                        // res.redirect("/doctopdf");
                                     } else {
                                         console.log('results:', results);
                                     }
@@ -313,12 +327,14 @@ app.post("/download", (req, res) => {
                 }
             });
         } else {
-            var fid = req.body.id.split("/").pop();
-            fs.readFile(req.body.id + "/" + fid + ".zip", (err) => {
+            // var fid = req.body.id.split("/").pop();
+            console.log(req.body.id);
+            fs.readFile(req.body.id + ".zip", (err) => {
                 if (err) {
                     res.redirect("/" + req.body.id.split("/")[1]);
+                    console.log(err);
                 } else {
-                    res.download(__dirname + "/" + req.body.id + "/" + fid + ".zip");
+                    res.download(__dirname + "/" + req.body.id + ".zip");
                 }
             });
         }

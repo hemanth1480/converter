@@ -17,8 +17,7 @@
     "path": "^0.12.7",
     "pdfkit": "^0.13.0",
     "python-shell": "^3.0.1",
-    "rimraf": "^3.0.2",
-    "zip-folder": "^1.0.0"
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {},
   "scripts": {
