@@ -12,7 +12,8 @@ const {
 } = require('@pdftron/pdfnet-node');
 var zipFolder = require('zip-folder');
 var https = require('https');
-const path = require("path")
+const path = require("path");
+var archiver = require('archiver');
 
 const doc = new PDFDocument({
     compress: false
@@ -86,7 +87,8 @@ app.get("/imgtopdfcomplete", (req, res) => {
                         res.render("imgtopdfco", {
                             id: req.query.id
                         });
-                        setTimeout(myFunction, 1000 * 600) 
+                        setTimeout(myFunction, 1000 * 600)
+
                         function myFunction() {
                             let options = {
                                 mode: 'text',
@@ -95,8 +97,9 @@ app.get("/imgtopdfcomplete", (req, res) => {
                                 args: ["imgtopdf/" + req.query.id]
                             };
                             PythonShell.run('/index.py', options, function (err, results) {
-                                if (err) {res.redirect("/imgtopdf")}
-                                else {
+                                if (err) {
+                                    res.redirect("/imgtopdf")
+                                } else {
                                     console.log('results:', results);
                                 }
                             });
@@ -134,7 +137,8 @@ app.get("/doctopdfcomplete", (req, res) => {
                                 res.render("doctopdfco", {
                                     id: req.query.id
                                 });
-                                setTimeout(myFunction, 1000 * 600) 
+                                setTimeout(myFunction, 1000 * 600)
+
                                 function myFunction() {
                                     let options = {
                                         mode: 'text',
@@ -143,8 +147,9 @@ app.get("/doctopdfcomplete", (req, res) => {
                                         args: ["doctopdf/" + req.query.id]
                                     };
                                     PythonShell.run('/index.py', options, function (err, results) {
-                                        if (err) {res.redirect("/doctopdf")}
-                                        else {
+                                        if (err) {
+                                            res.redirect("/doctopdf")
+                                        } else {
                                             console.log('results:', results);
                                         }
                                     });
@@ -176,32 +181,48 @@ app.get("/ppttopdfcomplete", (req, res) => {
                 fs.readdir("output-files/ppttopdf/" + req.query.id, (err) => {
                     if (err) {
                         res.redirect("/ppttopdf");
-                        console.log(err);
                     } else {
-                        zipFolder("output-files/ppttopdf/" + req.query.id, "output-files/ppttopdf/" + req.query.id + "/" + req.query.id + ".zip", (error) => {
-                            if (error) {
-                                res.redirect("/ppttopdf");
-                            } else {
-                                res.render("ppttopdfco", {
-                                    id: req.query.id
+                        var output = fs.createWriteStream("output-files/ppttopdf/" + req.query.id + "/" + req.query.id + ".zip");
+                        var archive = archiver('zip');
+
+                        output.on('close', function () {
+                            // console.log(archive.pointer() + ' total bytes');
+                            // console.log('archiver has been finalized and the output file descriptor has closed.');
+                            res.render("ppttopdfco", {
+                                id: req.query.id
+                            });
+                            setTimeout(myFunction, 1000 * 600)
+
+                            function myFunction() {
+                                let options = {
+                                    mode: 'text',
+                                    pythonOptions: ['-u'],
+                                    scriptPath: 'pythonscripts/output-remover',
+                                    args: ["ppttopdf/" + req.query.id]
+                                };
+                                PythonShell.run('/index.py', options, function (err, results) {
+                                    if (err) {
+                                        res.redirect("/doctopdf")
+                                    } else {
+                                        console.log('results:', results);
+                                    }
                                 });
-                                setTimeout(myFunction, 1000 * 600) 
-                                function myFunction() {
-                                    let options = {
-                                        mode: 'text',
-                                        pythonOptions: ['-u'],
-                                        scriptPath: 'pythonscripts/output-remover',
-                                        args: ["ppttopdf/" + req.query.id]
-                                    };
-                                    PythonShell.run('/index.py', options, function (err, results) {
-                                        if (err) {res.redirect("/ppttopdf")}
-                                        else {
-                                            console.log('results:', results);
-                                        }
-                                    });
-                                }
                             }
                         });
+
+                        archive.on('error', function (err) {
+                            throw err;
+                        });
+
+                        archive.pipe(output);
+
+                        // append files from a sub-directory, putting its contents at the root of archive
+                        archive.directory("output-files/ppttopdf/" + req.query.id, false);
+
+                        // append files from a sub-directory and naming it `new-subdir` within the archive
+                        archive.directory('subdir/', 'new-subdir');
+
+                        archive.finalize();
                     }
                 });
             }
@@ -220,7 +241,8 @@ app.get("/pdfmergeco", (req, res) => {
                 res.render("pdfmergeco", {
                     id: req.query.id
                 });
-                setTimeout(myFunction, 1000 * 600) 
+                setTimeout(myFunction, 1000 * 600)
+
                 function myFunction() {
                     let options = {
                         mode: 'text',
@@ -229,8 +251,9 @@ app.get("/pdfmergeco", (req, res) => {
                         args: ["ppttopdf/" + req.query.id]
                     };
                     PythonShell.run('/index.py', options, function (err, results) {
-                        if (err) {res.redirect("/pdfmerger")}
-                        else {
+                        if (err) {
+                            res.redirect("/pdfmerger")
+                        } else {
                             console.log('results:', results);
                         }
                     });
@@ -363,7 +386,9 @@ app.post("/doctopdf", upload.array('docx'), (req, res) => {
                         };
 
                         PDFNet.runWithCleanup(main, 'demo:1655819399669:7a7ea63a0300000000f8674b8875d719b92b2a1b6dddb6eb4d27bcfd85').catch(function (err) {
-                            if(err) {res.redirect("/doctopdf");}
+                            if (err) {
+                                res.redirect("/doctopdf");
+                            }
                         }).then(function () {
                             if (count == fls.length - 1) {
                                 res.redirect("/doctopdfcomplete?id=" + req.body.tt)
@@ -399,10 +424,12 @@ app.post("/ppttopdf", upload.array('pptx'), (req, res) => {
                             );
                         };
                         PDFNet.runWithCleanup(main, 'demo:1655819399669:7a7ea63a0300000000f8674b8875d719b92b2a1b6dddb6eb4d27bcfd85').catch(function (err) {
-                            if(err) {res.redirect("/ppttopdf");}
+                            if (err) {
+                                res.redirect("/ppttopdf");
+                            }
                         }).then(function () {
                             if (count == fls.length - 1) {
-                                res.redirect("/ppttopdfcomplete?id=" + req.body.tt)
+                                res.redirect("/ppttopdfcomplete?id=" + req.body.tt);
                             } else {
                                 count++
                             }
