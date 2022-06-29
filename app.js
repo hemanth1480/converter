@@ -498,6 +498,17 @@ if (port == null || port == "") {
     port = 8080;
 }
 
-app.listen(port, () => {
-    console.log("Server started on port " + port)
+const sslS = https.createServer(
+    {
+        key: fs.readFileSync(path.join(__dirname,"key.pem")),
+        cert: fs.readFileSync(path.join(__dirname,"cert.pem"))
+    }, app
+)
+
+sslS.listen(port, () => {
+    console.log("Server started on port " + port);
 });
+
+// app.listen(port, () => {
+//     console.log("Server started on port " + port)
+// });
