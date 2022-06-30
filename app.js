@@ -133,8 +133,6 @@ app.get("/doctopdfcomplete", (req, res) => {
                         var archive = archiver('zip');
 
                         output.on('close', function () {
-                            // console.log(archive.pointer() + ' total bytes');
-                            // console.log('archiver has been finalized and the output file descriptor has closed.');
                             res.render("doctopdfco", {
                                 id: req.query.id
                             });
@@ -145,7 +143,7 @@ app.get("/doctopdfcomplete", (req, res) => {
                                     mode: 'text',
                                     pythonOptions: ['-u'],
                                     scriptPath: 'pythonscripts/output-remover',
-                                    args: ["ppttopdf/" + req.query.id]
+                                    args: ["doctopdf/" + req.query.id]
                                 };
                                 PythonShell.run('/index.py', options, function (err, results) {
                                     if (err) {
@@ -162,11 +160,7 @@ app.get("/doctopdfcomplete", (req, res) => {
                         });
 
                         archive.pipe(output);
-
-                        // append files from a sub-directory, putting its contents at the root of archive
                         archive.directory("output-files/doctopdf/" + req.query.id, false);
-
-                        // append files from a sub-directory and naming it `new-subdir` within the archive
                         archive.directory('subdir/', 'new-subdir');
 
                         archive.finalize();
@@ -200,8 +194,6 @@ app.get("/ppttopdfcomplete", (req, res) => {
                         var archive = archiver('zip');
 
                         output.on('close', function () {
-                            // console.log(archive.pointer() + ' total bytes');
-                            // console.log('archiver has been finalized and the output file descriptor has closed.');
                             res.render("ppttopdfco", {
                                 id: req.query.id
                             });
@@ -229,11 +221,7 @@ app.get("/ppttopdfcomplete", (req, res) => {
                         });
 
                         archive.pipe(output);
-
-                        // append files from a sub-directory, putting its contents at the root of archive
                         archive.directory("output-files/ppttopdf/" + req.query.id, false);
-
-                        // append files from a sub-directory and naming it `new-subdir` within the archive
                         archive.directory('subdir/', 'new-subdir');
 
                         archive.finalize();
@@ -262,11 +250,11 @@ app.get("/pdfmergeco", (req, res) => {
                         mode: 'text',
                         pythonOptions: ['-u'],
                         scriptPath: 'pythonscripts/output-remover',
-                        args: ["ppttopdf/" + req.query.id]
+                        args: ["pdf-merger/" + req.query.id]
                     };
                     PythonShell.run('/index.py', options, function (err, results) {
                         if (err) {
-                            res.redirect("/pdfmerger")
+                            // res.redirect("/pdfmerger")s
                         } else {
                             console.log('results:', results);
                         }
