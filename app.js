@@ -486,12 +486,12 @@ if (port == null || port == "") {
     port = 8080;
 }
 
-const sslS = https.createServer(
-    {
-        key: fs.readFileSync(path.join(__dirname,"key.pem")),
-        cert: fs.readFileSync(path.join(__dirname,"cert.pem"))
-    },app
-);
+// const sslS = https.createServer(
+//     {
+//         key: fs.readFileSync(path.join(__dirname,"key.pem")),
+//         cert: fs.readFileSync(path.join(__dirname,"cert.pem"))
+//     },app
+// );
 
 // http.createServer(app).listen(80, function() {
 //     console.log("Express TTP server listening on port 80");
@@ -501,6 +501,6 @@ const sslS = https.createServer(
 //     console.log("Express HTTP server listening on port 443" );
 // });
 
-sslS.listen(port, () => {
+app.listen(port, () => {
     console.log("Server started on port " + port);
 });
