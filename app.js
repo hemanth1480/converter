@@ -11,7 +11,6 @@ const {
     PDFNet
 } = require('@pdftron/pdfnet-node');
 var https = require('https');
-const http = require('http');
 const path = require("path");
 var archiver = require('archiver');
 
@@ -482,27 +481,26 @@ app.post("/pdfmergeraddfiles", upload.array("pdf"), (req, res) => {
     res.redirect("/pdfselection?id=" + req.body.tt);
 });
 
-// let port = process.env.PORT;
-// if (port == null || port == "") {
-//     port = 8080;
-// }
+let port = process.env.PORT;
+if (port == null || port == "") {
+    port = 8080;
+}
 
-// const sslS = https.createServer(
-let options = 
+const sslS = https.createServer(
     {
         key: fs.readFileSync(path.join(__dirname,"key.pem")),
         cert: fs.readFileSync(path.join(__dirname,"cert.pem"))
-    }
-// );
+    },app
+);
 
-http.createServer(app).listen(8080, function() {
-    console.log("Express TTP server listening on port 80");
-});
-
-https.createServer(options, app).listen(443, function() {
-    console.log("Express HTTP server listening on port 443" );
-});
-
-// sslS.listen(port, () => {
-//     console.log("Server started on port " + port);
+// http.createServer(app).listen(80, function() {
+//     console.log("Express TTP server listening on port 80");
 // });
+
+// https.createServer(options, app).listen(443, function() {
+//     console.log("Express HTTP server listening on port 443" );
+// });
+
+sslS.listen(port, () => {
+    console.log("Server started on port " + port);
+});
